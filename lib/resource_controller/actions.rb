@@ -4,12 +4,14 @@ module ResourceController
     def index
       load_collection
       before :index
+      return if performed?
       response_for :index
     end
     
     def show
       load_object
       before :show
+      return if performed?
       response_for :show
     rescue ActiveRecord::RecordNotFound
       response_for :show_fails
@@ -19,6 +21,7 @@ module ResourceController
       build_object
       load_object
       before :create
+      return if performed?
       if object.save
         after :create
         set_flash :create
@@ -33,6 +36,7 @@ module ResourceController
     def update
       load_object
       before :update
+      return if performed?
       if object.update_attributes object_params
         after :update
         set_flash :update
@@ -48,18 +52,21 @@ module ResourceController
       build_object
       load_object
       before :new_action
+      return if performed?
       response_for :new_action
     end
 
     def edit
       load_object
       before :edit
+      return if performed?
       response_for :edit
     end
 
     def destroy
       load_object
       before :destroy
+      return if performed?
       if object.destroy
         after :destroy
         set_flash :destroy
